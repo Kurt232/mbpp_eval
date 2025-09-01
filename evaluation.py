@@ -50,7 +50,7 @@ def estimate_pass_at_k(
 
 
 def evaluate_functional_correctness(
-        input_file: str = None,
+        df: pd.DataFrame = None,
         n_workers: int = 32,
         timeout: float = 10.0,
         problem_file: str = "./mbpp_test.jsonl",
@@ -63,9 +63,6 @@ def evaluate_functional_correctness(
     if example_test:
         print("Example test...")
 
-    df = pd.read_parquet(input_file)
-    df["generation"] = df["predictions"].apply(lambda x: ast.literal_eval(x)[0])
-    df["task_id"] = df["gold"].apply(lambda x: ast.literal_eval(x)[0])
     code_pattern = re.compile(r"```python(.*?)```", re.DOTALL)
     
     def extract_last_code_block(text):
@@ -77,9 +74,7 @@ def evaluate_functional_correctness(
         print(f" format missed: {len(df[df['code'].notnull()])} / {len(df)}")
 
     sample_jsonl = df[["generation", "code", "task_id"]]
-    # sample_jsonl.to_json("tmp.json", orient="records", indent=2)
     sample_jsonl = sample_jsonl.to_dict(orient="records")
-    # print(sample_jsonl[0])
 
     problems = read_dataset(problem_file)
 
