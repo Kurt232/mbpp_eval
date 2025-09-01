@@ -71,7 +71,7 @@ def evaluate_functional_correctness(
     
     df["code"] = df["generation"].apply(extract_last_code_block)
     if len(df[df["code"].notnull()]) < len(df):
-        print(f" format missed: {len(df[df['code'].notnull()])} / {len(df)}")
+        print(f" format pass: {len(df[df['code'].notnull()])} / {len(df)}")
 
     sample_jsonl = df[["generation", "code", "task_id"]]
     sample_jsonl = sample_jsonl.to_dict(orient="records")
